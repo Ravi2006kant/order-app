@@ -25,7 +25,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       appBar: AppBar(
         foregroundColor: Colors.white,
         backgroundColor: Colors.amber,
-        title: Text(widget.productId.toString()),
+        centerTitle: true,
+        title: Text("Food Detail",style: TextStyle(fontWeight: .bold),),
       ),
       body: FutureBuilder(
         future: product,

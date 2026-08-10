@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:http/http.dart' as http;
 
 class ApiService {
@@ -33,14 +32,12 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>> getProductById(int id) async {
-  final response = await http.get(
-    Uri.parse("$apiUrl/products/$id"),
-  );
+    final response = await http.get(Uri.parse("$apiUrl/products/$id"));
 
-  if (response.statusCode == 200) {
-    return jsonDecode(response.body);
-  } else {
-    throw Exception('Failed to load product details');
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to load product details');
+    }
   }
-}
 }

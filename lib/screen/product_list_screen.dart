@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:orderable/api/api_service.dart';
 import 'package:orderable/component/loading_indicator.dart';
+import 'package:orderable/order/order_management.dart';
 import 'package:orderable/order/order_screen.dart';
 import 'package:orderable/screen/product_detail_screen.dart';
 
@@ -11,30 +12,29 @@ class ProductListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final apiService = ApiService();
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.amber,
+       appBar: AppBar(
+        backgroundColor: Colors.orangeAccent,
         centerTitle: true,
         title: Text(
-          "Order",
+          "Food Menu",
           style: TextStyle(color: Colors.white, fontWeight: .bold),
         ),
       ),
-      body: FutureBuilder(
-        future: apiService.getProducts(),
+      body: SafeArea(
+        child: FutureBuilder(
+          future: apiService.getProducts(),
 
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return LoadingIndicator();
-          }
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return LoadingIndicator();
+            }
 
-          if (snapshot.hasError) {
-            return Center(child: Text(snapshot.error.toString()));
-          }
+            if (snapshot.hasError) {
+              return Center(child: Text(snapshot.error.toString()));
+            }
 
-          final products = snapshot.data!;
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ListView.builder(
+            final products = snapshot.data!;
+            return ListView.builder(
               itemCount: products.length,
               itemBuilder: (context, index) {
                 return InkWell(
@@ -48,102 +48,156 @@ class ProductListScreen extends StatelessWidget {
                       ),
                     );
                   },
-                  child: Container(
-                    margin: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.amber,
-                      borderRadius: BorderRadius.circular(25),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      top: 7,
+                      left: 7,
+                      right: 7,
+                      bottom: 0,
                     ),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: Image.network(
-                            products[index]['images'][0],
-                            width: 100,
-                          ),
+                    child: Card(
+                      elevation: 2,
+                      color: Colors.orangeAccent.shade200,
+                      child: Container(
+                        margin: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: Colors.orangeAccent.shade200,
+                          borderRadius: BorderRadius.circular(15),
                         ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: .start,
-                            children: [
-                              ListTile(
-                                title: Text(
-                                  products[index]['title'],
-                                  style: TextStyle(fontWeight: .bold),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 5,
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                                trailing: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                  child: IconButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return OrderScreen(productId: products[index]['id'],);
-                                          },
+                                child: Image.network(
+                                  products[index]['images'][0],
+                                  width: 100,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Column(
+                                  crossAxisAlignment: .start,
+                                  children: [
+                                    Text(
+                                      products[index]['title'],
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: .bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    Text(products[index]['description'], maxLines: 2),
+                                    SizedBox(height: 15),
+                                    Row(
+                                      mainAxisAlignment: .spaceBetween,
+                                      children: [
+                                        Text(
+                                          "\$ ${products[index]['price'].toString()}",
+                                          style: TextStyle(
+                                            fontSize: 17,
+                                            color: Colors.white,
+                                            fontWeight: .w500,
+                                          ),
                                         ),
-                                      );
-                                    },
-                                    icon: Icon(Icons.add, color: Colors.amber),
-                                  ),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(
+                                              15,
+                                            ),
+                                          ),
+                                          child: TextButton(
+                                            onPressed: () {
+                                              OrderManager.instance.addItem(
+                                                products[index],
+                                              );
+
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      OrderScreen(),
+                                                ),
+                                              );
+                                            },
+
+                                            child: Text(
+                                              "Add",
+                                              style: TextStyle(
+                                                fontWeight: .bold,
+                                                backgroundColor: Colors.white,
+                                                color: Colors.orangeAccent,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 5),
+                                    // Padding(
+                                    //   padding: const EdgeInsets.symmetric(
+                                    //     horizontal: 15,
+                                    //   ),
+                                    //   child: Text(
+                                    //     "Discount - ${products[index]['discountPercentage'].toString()}%",
+                                    //     style: TextStyle(
+                                    //       color: Colors.white,
+                                    //       // decoration: .lineThrough,
+                                    //       // decorationThickness: 2,
+                                    //       // decorationColor: Colors.white,
+                                    //     ),
+                                    //   ),
+                                    // ),
+                                  ],
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 15,
-                                ),
-                                child: Text(
-                                  "\$ ${products[index]['price'].toString()}",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: .w500,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 5),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 15,
-                                ),
-                                child: Text(
-                                  "Discount - ${products[index]['discountPercentage'].toString()}%",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    // decoration: .lineThrough,
-                                    // decorationThickness: 2,
-                                    // decorationColor: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 );
               },
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
 }
 
 /*
-
-image 
-title
-description
-price
-rating
-brand
-category
+Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                child: IconButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          return OrderScreen(
+                                            productId: products[index]['id'],
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  },
+                                  icon: Icon(Icons.add, color: Colors.amber),
+                                ),
+                              ),
 
 
 */
