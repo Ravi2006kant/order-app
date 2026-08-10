@@ -1,26 +1,111 @@
 import 'package:flutter/material.dart';
 import 'package:orderable/api/api_service.dart';
 import 'package:orderable/component/loading_indicator.dart';
-import 'package:orderable/order/order_screen.dart';
-import 'package:orderable/screen/product_detail_screen.dart';
 
-class ProductListScreen extends StatelessWidget {
-  const ProductListScreen({super.key});
+class OrderScreen extends StatefulWidget {
+  int productId;
+  OrderScreen({super.key, required this.productId});
+
+  @override
+  State<OrderScreen> createState() => _OrderScreenState();
+}
+
+class _OrderScreenState extends State<OrderScreen> {
+  late Future<Map<String, dynamic>> product;
+
+  @override
+  void initState() {
+    super.initState();
+    product = ApiService().getProductById(widget.productId);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final apiService = ApiService();
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.white,
         backgroundColor: Colors.amber,
-        centerTitle: true,
-        title: Text(
-          "Order",
-          style: TextStyle(color: Colors.white, fontWeight: .bold),
-        ),
+        title: Text("order list"),
       ),
       body: FutureBuilder(
-        future: apiService.getProducts(),
+        future: product,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return LoadingIndicator();
+          }
+
+          if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          }
+          final products = snapshot.data!;
+
+          return Container(
+            height: 120,
+            margin: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.amber,
+              borderRadius: BorderRadius.circular(25),
+            ),
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: Image.network(products['thumbnail'], width: 100),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    children: [
+                      ListTile(
+                        title: Text(
+                          products['title'],
+                          style: TextStyle(fontWeight: .bold),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Text(
+                          "\$ ${products['price'].toString()}",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: .w500,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Text(
+                          "Discount - ${products['discountPercentage'].toString()}%",
+                          style: TextStyle(
+                            color: Colors.white,
+                            // decoration: .lineThrough,
+                            // decorationThickness: 2,
+                            // decorationColor: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+
+
+/*
+
+
+     return Scaffold(
+      appBar: AppBar(),
+      body: FutureBuilder(
+        future: products,
 
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -39,14 +124,14 @@ class ProductListScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 return InkWell(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProductDetailScreen(
-                          productId: products[index]['id'],
-                        ),
-                      ),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => ProductDetailScreen(
+                    //       productId: products[index]['id'],
+                    //     ),
+                    //   ),
+                    // );
                   },
                   child: Container(
                     margin: EdgeInsets.all(10),
@@ -78,16 +163,7 @@ class ProductListScreen extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(50),
                                   ),
                                   child: IconButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return OrderScreen(productId: products[index]['id'],);
-                                          },
-                                        ),
-                                      );
-                                    },
+                                    onPressed: () {},
                                     icon: Icon(Icons.add, color: Colors.amber),
                                   ),
                                 ),
@@ -132,18 +208,7 @@ class ProductListScreen extends StatelessWidget {
         },
       ),
     );
-  }
-}
-
-/*
-
-image 
-title
-description
-price
-rating
-brand
-category
-
 
 */
+
+

@@ -23,6 +23,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.white,
         backgroundColor: Colors.amber,
         title: Text(widget.productId.toString()),
       ),
@@ -38,24 +39,57 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           }
           final data = snapshot.data!;
           return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: .start,
-              children: [
-                Image.network(data['thumbnail']),
-                Text(
-                  data['title'],
-                  style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20),
-                ),
-                Text("Rating  ${data['rating']}"),
-                SizedBox(height: 10),
-                Text(
-                  "Description",
-                  style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20),
-                ),
-                SizedBox(height: 10),
-                Text(data['description']),
-                Text('₹${data['price']}'),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: .start,
+                mainAxisAlignment: .center,
+                children: [
+                  Center(child: Image.network(data['thumbnail'])),
+
+                  Container(
+                    padding: EdgeInsets.all(7),
+                    decoration: BoxDecoration(
+                      color: Colors.amber,
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: Text(
+                      data['title'],
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  Row(
+                    children: [
+                      Icon(Icons.star),
+                      Text("${data['rating']}"),
+                      SizedBox(width: 15),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: Text(
+                          "\$ ${data['price'].toString()}",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Divider(color: Colors.black),
+
+                  Text(
+                    "Description",
+                    style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20),
+                  ),
+                  SizedBox(height: 10),
+                  Text(data['description']),
+                  Text('₹${data['price']}'),
+                ],
+              ),
             ),
           );
         },
