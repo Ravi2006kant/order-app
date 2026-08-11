@@ -16,12 +16,10 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     List<Widget> screen = [ProductListScreen(), OrderScreen()];
     return Scaffold(
-     
       body: screen[_index],
 
       bottomNavigationBar: BottomNavigationBar(
-        
-backgroundColor: Colors.orange,
+        backgroundColor: Colors.orange.shade700,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white,
         selectedLabelStyle: TextStyle(fontWeight: .bold),
@@ -33,7 +31,7 @@ backgroundColor: Colors.orange,
         },
         currentIndex: _index,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home",),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
             label: "Order",

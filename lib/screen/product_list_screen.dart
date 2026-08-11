@@ -12,11 +12,12 @@ class ProductListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final apiService = ApiService();
     return Scaffold(
-       appBar: AppBar(
-        backgroundColor: Colors.orangeAccent,
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.orange,
         centerTitle: true,
         title: Text(
-          "Food Menu",
+          "Menu",
           style: TextStyle(color: Colors.white, fontWeight: .bold),
         ),
       ),
@@ -57,11 +58,11 @@ class ProductListScreen extends StatelessWidget {
                     ),
                     child: Card(
                       elevation: 2,
-                      color: Colors.orangeAccent.shade200,
+                      color: Colors.orange.shade500,
                       child: Container(
                         margin: EdgeInsets.all(5),
                         decoration: BoxDecoration(
-                          color: Colors.orangeAccent.shade200,
+                          color: Colors.orange.shade500,
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: Row(
@@ -95,7 +96,10 @@ class ProductListScreen extends StatelessWidget {
                                         color: Colors.white,
                                       ),
                                     ),
-                                    Text(products[index]['description'], maxLines: 2),
+                                    Text(
+                                      products[index]['description'],
+                                      maxLines: 2,
+                                    ),
                                     SizedBox(height: 15),
                                     Row(
                                       mainAxisAlignment: .spaceBetween,
@@ -120,14 +124,25 @@ class ProductListScreen extends StatelessWidget {
                                               OrderManager.instance.addItem(
                                                 products[index],
                                               );
-
-                                              Navigator.push(
+                                              ScaffoldMessenger.of(
                                                 context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      OrderScreen(),
+                                              ).showSnackBar(
+                                                SnackBar(
+                                                  duration: Duration(
+                                                    seconds: 1,
+                                                  ),
+                                                  content: Text(
+                                                    products[index]['title'],
+                                                  ),
                                                 ),
                                               );
+                                              // Navigator.push(
+                                              //   context,
+                                              //   MaterialPageRoute(
+                                              //     builder: (context) =>
+                                              //         OrderScreen(),
+                                              //   ),
+                                              // );
                                             },
 
                                             child: Text(
