@@ -36,7 +36,7 @@ class _HomeState extends State<Home> {
             icon: Icon(Icons.shopping_cart),
             label: "Order",
           ),
-          // BottomNavigationBarItem(icon: Icon(Icons.more_horiz_outlined),label: "more"),
+          
         ],
       ),
     );

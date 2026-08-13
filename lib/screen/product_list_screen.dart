@@ -23,15 +23,6 @@ class ProductListScreen extends StatelessWidget {
           "Menu",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-
-        // actions: [
-        //   IconButton(
-        //     onPressed: () {
-        //       // Open Order Screen here later
-        //     },
-        //     icon: const Icon(Icons.shopping_bag_outlined),
-        //   ),
-        // ],
       ),
 
       body: SafeArea(
@@ -186,7 +177,9 @@ class ProductListScreen extends StatelessWidget {
                                         },
 
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: Theme.of(context).colorScheme.primary,
+                                          backgroundColor: Theme.of(
+                                            context,
+                                          ).colorScheme.primary,
                                           foregroundColor: Colors.white,
 
                                           shape: RoundedRectangleBorder(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:orderable/api/api_service.dart';
 import 'package:orderable/component/loading_indicator.dart';
+import 'package:orderable/order/order_management.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final int productId;
@@ -279,7 +280,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        backgroundColor: Colors.orange.shade700,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
@@ -287,6 +288,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       ),
 
                       onPressed: () {
+                        OrderManager.instance.addItem(data);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text("Item added to order")),
                         );
