@@ -19,7 +19,7 @@ class _HomeState extends State<Home> {
       body: screen[_index],
 
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.orange.shade700,
+        backgroundColor:Colors.orange.shade700,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white,
         selectedLabelStyle: TextStyle(fontWeight: .bold),

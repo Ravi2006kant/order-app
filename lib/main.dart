@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:orderable/home.dart';
+import 'package:orderable/theme/theme.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,6 +12,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: Home());
+    return MaterialApp(
+      theme: lightmode,
+      debugShowCheckedModeBanner: false,
+      home: Home(),
+    );
   }
 }

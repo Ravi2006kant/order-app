@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:orderable/api/api_service.dart';
 import 'package:orderable/component/loading_indicator.dart';
 import 'package:orderable/order/order_management.dart';
-import 'package:orderable/order/order_screen.dart';
 import 'package:orderable/screen/product_detail_screen.dart';
 
 class ProductListScreen extends StatelessWidget {
@@ -11,173 +10,208 @@ class ProductListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final apiService = ApiService();
+    final primaryColor = Theme.of(context).colorScheme.primary;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey.shade100,
+
       appBar: AppBar(
-        backgroundColor: Colors.orange,
+        backgroundColor: primaryColor,
+        foregroundColor: Colors.white,
         centerTitle: true,
-        title: Text(
+        title: const Text(
           "Menu",
-          style: TextStyle(color: Colors.white, fontWeight: .bold),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
+
+        // actions: [
+        //   IconButton(
+        //     onPressed: () {
+        //       // Open Order Screen here later
+        //     },
+        //     icon: const Icon(Icons.shopping_bag_outlined),
+        //   ),
+        // ],
       ),
+
       body: SafeArea(
         child: FutureBuilder(
           future: apiService.getProducts(),
 
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return LoadingIndicator();
+              return const LoadingIndicator();
             }
 
             if (snapshot.hasError) {
               return Center(child: Text(snapshot.error.toString()));
             }
 
+            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(child: Text("No products available"));
+            }
+
             final products = snapshot.data!;
+
             return ListView.builder(
+              padding: const EdgeInsets.all(12),
               itemCount: products.length,
+
               itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProductDetailScreen(
-                          productId: products[index]['id'],
+                final product = products[index];
+
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  elevation: 2,
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(18),
+
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ProductDetailScreen(productId: product['id']),
                         ),
-                      ),
-                    );
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      top: 7,
-                      left: 7,
-                      right: 7,
-                      bottom: 0,
-                    ),
-                    child: Card(
-                      elevation: 2,
-                      color: Colors.orange.shade500,
-                      child: Container(
-                        margin: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          color: Colors.orange.shade500,
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 5,
-                              ),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Image.network(
-                                  products[index]['images'][0],
-                                  width: 100,
-                                ),
-                              ),
+                      );
+                    },
+
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+
+                        children: [
+                          // ---------------- IMAGE ----------------
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(14),
+
+                            child: Image.network(
+                              product['thumbnail'],
+                              width: 115,
+                              height: 125,
+                              fit: BoxFit.cover,
+
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  width: 115,
+                                  height: 125,
+                                  color: Colors.grey.shade200,
+                                  child: const Icon(
+                                    Icons.fastfood,
+                                    size: 40,
+                                    color: Colors.grey,
+                                  ),
+                                );
+                              },
                             ),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Column(
-                                  crossAxisAlignment: .start,
+                          ),
+
+                          const SizedBox(width: 12),
+
+                          // ---------------- DETAILS ----------------
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+
+                              children: [
+                                Text(
+                                  product['title'],
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 6),
+
+                                Text(
+                                  product['description'],
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.grey.shade600,
+                                    height: 1.3,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 12),
+
+                                Row(
                                   children: [
                                     Text(
-                                      products[index]['title'],
+                                      "₹${product['price']}",
                                       style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: .bold,
-                                        color: Colors.white,
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.bold,
+                                        color: primaryColor,
                                       ),
                                     ),
-                                    Text(
-                                      products[index]['description'],
-                                      maxLines: 2,
-                                    ),
-                                    SizedBox(height: 15),
-                                    Row(
-                                      mainAxisAlignment: .spaceBetween,
-                                      children: [
-                                        Text(
-                                          "\$ ${products[index]['price'].toString()}",
-                                          style: TextStyle(
-                                            fontSize: 17,
-                                            color: Colors.white,
-                                            fontWeight: .w500,
-                                          ),
-                                        ),
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(
-                                              15,
-                                            ),
-                                          ),
-                                          child: TextButton(
-                                            onPressed: () {
-                                              OrderManager.instance.addItem(
-                                                products[index],
-                                              );
-                                              ScaffoldMessenger.of(
-                                                context,
-                                              ).showSnackBar(
-                                                SnackBar(
-                                                  duration: Duration(
-                                                    seconds: 1,
-                                                  ),
-                                                  content: Text(
-                                                    products[index]['title'],
-                                                  ),
-                                                ),
-                                              );
-                                              // Navigator.push(
-                                              //   context,
-                                              //   MaterialPageRoute(
-                                              //     builder: (context) =>
-                                              //         OrderScreen(),
-                                              //   ),
-                                              // );
-                                            },
 
-                                            child: Text(
-                                              "Add",
-                                              style: TextStyle(
-                                                fontWeight: .bold,
-                                                backgroundColor: Colors.white,
-                                                color: Colors.orangeAccent,
+                                    const Spacer(),
+
+                                    // ADD BUTTON
+                                    SizedBox(
+                                      height: 38,
+
+                                      child: ElevatedButton.icon(
+                                        onPressed: () {
+                                          OrderManager.instance.addItem(
+                                            product,
+                                          );
+
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              duration: const Duration(
+                                                seconds: 1,
+                                              ),
+                                              content: Text(
+                                                "${product['title']} added",
                                               ),
                                             ),
+                                          );
+                                        },
+
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Theme.of(context).colorScheme.primary,
+                                          foregroundColor: Colors.white,
+
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
                                           ),
                                         ),
-                                      ],
+
+                                        icon: const Icon(Icons.add, size: 18),
+
+                                        label: const Text(
+                                          "Add",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                    SizedBox(height: 5),
-                                    // Padding(
-                                    //   padding: const EdgeInsets.symmetric(
-                                    //     horizontal: 15,
-                                    //   ),
-                                    //   child: Text(
-                                    //     "Discount - ${products[index]['discountPercentage'].toString()}%",
-                                    //     style: TextStyle(
-                                    //       color: Colors.white,
-                                    //       // decoration: .lineThrough,
-                                    //       // decorationThickness: 2,
-                                    //       // decorationColor: Colors.white,
-                                    //     ),
-                                    //   ),
-                                    // ),
                                   ],
                                 ),
-                              ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -190,29 +224,3 @@ class ProductListScreen extends StatelessWidget {
     );
   }
 }
-
-/*
-Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(50),
-                                ),
-                                child: IconButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) {
-                                          return OrderScreen(
-                                            productId: products[index]['id'],
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  },
-                                  icon: Icon(Icons.add, color: Colors.amber),
-                                ),
-                              ),
-
-
-*/

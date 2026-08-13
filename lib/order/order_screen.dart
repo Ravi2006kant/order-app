@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:orderable/order/order_management.dart';
-import 'package:orderable/summary/summary_screen.dart';
+import 'package:orderable/order/summary_screen.dart';
 
 class OrderScreen extends StatefulWidget {
   const OrderScreen({super.key});
@@ -18,7 +18,7 @@ class _OrderScreenState extends State<OrderScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         foregroundColor: Colors.white,
-        backgroundColor: Colors.orangeAccent,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         centerTitle: true,
         title: Text(
           "Your Order",
@@ -34,11 +34,11 @@ class _OrderScreenState extends State<OrderScreen> {
               return const Center(
                 child: Text(
                   "No items in your order",
-                  style: TextStyle(fontWeight: .bold,fontSize: 20),
+                  style: TextStyle(fontWeight: .bold, fontSize: 20),
                 ),
               );
             }
-        
+
             return Column(
               children: [
                 Expanded(
@@ -46,7 +46,7 @@ class _OrderScreenState extends State<OrderScreen> {
                     itemCount: orderManager.items.length,
                     itemBuilder: (context, index) {
                       final item = orderManager.items[index];
-        
+
                       return Card(
                         color: Colors.white,
                         elevation: 2,
@@ -58,7 +58,7 @@ class _OrderScreenState extends State<OrderScreen> {
                               height: 100,
                               fit: BoxFit.cover,
                             ),
-        
+
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,7 +71,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                     ),
                                   ),
                                   SizedBox(height: 15),
-        
+
                                   Row(
                                     mainAxisAlignment: .spaceBetween,
                                     crossAxisAlignment: .end,
@@ -89,10 +89,11 @@ class _OrderScreenState extends State<OrderScreen> {
                                               icon: const Icon(Icons.remove),
                                             ),
                                           ),
-        
+
                                           CircleAvatar(
                                             radius: 15,
-                                            backgroundColor: Colors.orangeAccent,
+                                            backgroundColor:
+                                                Colors.orangeAccent,
                                             child: Text(
                                               "${item.quantity}",
                                               style: TextStyle(
@@ -100,7 +101,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                               ),
                                             ),
                                           ),
-        
+
                                           IconButton(
                                             // style: ButtonStyle(
                                             //   backgroundColor: WidgetStatePropertyAll(
@@ -108,7 +109,9 @@ class _OrderScreenState extends State<OrderScreen> {
                                             //   ),
                                             // ),
                                             onPressed: () {
-                                              orderManager.increaseQuantity(item);
+                                              orderManager.increaseQuantity(
+                                                item,
+                                              );
                                             },
                                             icon: const Icon(Icons.add),
                                           ),
@@ -119,7 +122,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                 ],
                               ),
                             ),
-        
+
                             Column(
                               children: [
                                 Padding(
@@ -154,7 +157,7 @@ class _OrderScreenState extends State<OrderScreen> {
                     },
                   ),
                 ),
-        
+
                 Padding(
                   padding: const EdgeInsets.all(20),
                   child: Column(
@@ -178,12 +181,14 @@ class _OrderScreenState extends State<OrderScreen> {
                           ),
                         ],
                       ),
-        
+                  
                       const SizedBox(height: 10),
-        
+                  
                       ElevatedButton(
                         style: ButtonStyle(
-                          backgroundColor: WidgetStatePropertyAll(Colors.orange),
+                          backgroundColor: WidgetStatePropertyAll(
+                            Colors.orange.shade700,
+                          ),
                         ),
                         onPressed: () {
                           Navigator.push(

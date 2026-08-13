@@ -6,9 +6,9 @@ class SummaryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
+      appBar: AppBar(
         foregroundColor: Colors.white,
-        backgroundColor: Colors.orangeAccent,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         centerTitle: true,
         title: Text(
           "Order Status",
@@ -25,7 +25,7 @@ class SummaryScreen extends StatelessWidget {
               style: TextStyle(fontWeight: .bold, fontSize: 25),
             ),
           ),
-            Text(
+          Text(
             "Thank You For Choosing Us.❤️",
             style: TextStyle(fontWeight: .w500, fontSize: 20),
           ),
